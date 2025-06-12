@@ -1,6 +1,6 @@
 // luis
 CREATE TABLE destino_final(
-    id NUMBER CONSTRAINT destino_id_PK PRIMARY KEY,
+    id_destino_final NUMBER CONSTRAINT destino_id_PK PRIMARY KEY,
     nombre VARCHAR2(30) CONSTRAINT destino_nombre_NN NOT NULL,
     tipo VARCHAR2(30) CONSTRAINT destino_tipo_NN NOT NULL,
     latitud DECIMAL(8,6) CONSTRAINT destino_latitud_NN NOT NULL,
@@ -11,17 +11,17 @@ CREATE TABLE destino_final(
 CREATE SEQUENCE destino_id_SEQ START WITH 1 INCREMENT BY 1;
 
 CREATE TABLE zonas (
-    id NUMBER GENERATED ALWAYS AS IDENTITY,
+    id_zona NUMBER GENERATED ALWAYS AS IDENTITY,
     nombre VARCHAR2(30) CONSTRAINT zonas_nombre_NN NOT NULL,
-    CONSTRAINT zonas_id_PK PRIMARY KEY (id)
+    CONSTRAINT zonas_id_PK PRIMARY KEY (id_zona)
 );
 
 CREATE TABLE rutas(
-    id NUMBER GENERATED ALWAYS AS IDENTITY,
+    id_ruta NUMBER GENERATED ALWAYS AS IDENTITY,
     nombre VARCHAR2(30) CONSTRAINT rutas_nombre_NN NOT NULL,
-    id_zona NUMBER CONSTRAINT rutas_zona_FK REFERENCES zonas(id),
-    id_destino_final CONSTRAINT rutas_destino_FK REFERENCES destino_final(id),
-    CONSTRAINT rutas_id_PK PRIMARY KEY (id)
+    id_zona NUMBER CONSTRAINT rutas_zona_FK REFERENCES zonas(id_zona),
+    id_destino_final CONSTRAINT rutas_destino_FK REFERENCES destino_final(id_destino_final),
+    CONSTRAINT rutas_id_PK PRIMARY KEY (id_ruta)
 );
 
 
@@ -34,32 +34,32 @@ CREATE TABLE sensores(
 );
 
 CREATE TABLE tipo_residuo(
-    id NUMBER CONSTRAINT tipo_residuo_id_PK PRIMARY KEY,
+    id_tipo_residuo NUMBER CONSTRAINT tipo_residuo_id_PK PRIMARY KEY,
     descripcion VARCHAR(255) CONSTRAINT tipo_residuo_descripcion_NN NOT NULL
 );
 
 CREATE SEQUENCE tipo_residuo_id_SEQ START WITH 1 INCREMENT BY 1;
 
 CREATE TABLE ubicacion_contenedores(
-    id NUMBER CONSTRAINT ubi_cont_id_PK PRIMARY KEY,
+    id_ubicacion NUMBER CONSTRAINT ubi_cont_id_PK PRIMARY KEY,
     latitud DECIMAL(8,6),
     longitud DECIMAL(9,6),
     descripcion VARCHAR2(255) CONSTRAINT ubi_cont_NN NOT NULL,
-    id_zona NUMBER CONSTRAINT ubi_cont_zona REFERENCES zonas(id)
+    id_zona NUMBER CONSTRAINT ubi_cont_zona REFERENCES zonas(id_zona)
 );
 
 CREATE SEQUENCE ubi_cont_id_SEQ START WITH 1 INCREMENT BY 1;
 
 CREATE TABLE contenedores(
-    id NUMBER  GENERATED ALWAYS AS IDENTITY,
+    id_contenedor NUMBER  GENERATED ALWAYS AS IDENTITY,
     estado VARCHAR2(40) CONSTRAINT contenedores_estado_NN NOT NULL,
     capacidad_kg NUMBER CONSTRAINT contenedores_capacidad_NN NOT NULL,
     ultimo_mantenimiento DATE,
     id_ubicacion NUMBER,
     id_tipo_residuo NUMBER,
-    CONSTRAINT contenedores_id_PK PRIMARY KEY (id),
-    CONSTRAINT contenedores_ubicacion_FK FOREIGN KEY (id_ubicacion) REFERENCES ubicacion_contenedores(id),
-    CONSTRAINT contenedores_tipo_residuo_FK FOREIGN KEY(id_tipo_residuo) REFERENCES tipo_residuo(id),
+    CONSTRAINT contenedores_id_PK PRIMARY KEY (id_contenedor),
+    CONSTRAINT contenedores_ubicacion_FK FOREIGN KEY (id_ubicacion) REFERENCES ubicacion_contenedores(id_ubicacion),
+    CONSTRAINT contenedores_tipo_residuo_FK FOREIGN KEY(id_tipo_residuo) REFERENCES tipo_residuo(id_tipo_residuo),
     CONSTRAINT contenedores_estado_CK
     CHECK(estado IN('nuevo', 'en uso', 'lleno', 'vacio', 'dañado', 'perdido', 'fuera de servicio'))
 );
@@ -72,13 +72,13 @@ CREATE TABLE contenedores(
 // Leam
 // tablas creadas y constraints que creia pertinentes para cada una
 create table puestos(
-    id NUMBER GENERATED ALWAYS AS IDENTITY,
+    id_puesto NUMBER GENERATED ALWAYS AS IDENTITY,
     descripcion varchar2(255) CONSTRAINT puestos_descripcion_NN NOT NULL,
-    CONSTRAINT puestos_id_PK PRIMARY KEY (id)
+    CONSTRAINT puestos_id_PK PRIMARY KEY (id_puesto)
 );
     
 CREATE TABLE empleados(
-    id NUMBER GENERATED ALWAYS AS IDENTITY, 
+    id_empleado NUMBER GENERATED ALWAYS AS IDENTITY, 
     nombre VARCHAR2(40) CONSTRAINT empleados_nombre_NN NOT NULL,
     apellido VARCHAR2(40) CONSTRAINT empleados_apellido_NN NOT NULL,
     cedula VARCHAR2(40) CONSTRAINT empleados_cedula_NN NOT NULL,
@@ -87,8 +87,8 @@ CREATE TABLE empleados(
     fecha_nacimiento DATE CONSTRAINT empleados_fecha_nacimiento_NN NOT NULL,
     fecha_contratacion DATE CONSTRAINT empleados_fecha_contratacion_NN NOT NULL,
     id_puesto NUMBER CONSTRAINT empleados_puesto_NN NOT NULL,
-    CONSTRAINT empleados_id_pk PRIMARY KEY (id),
-    CONSTRAINT empleados_puesto_FK FOREIGN KEY (id_puesto) REFERENCES puestos(id),
+    CONSTRAINT empleados_id_pk PRIMARY KEY (id_empleado),
+    CONSTRAINT empleados_puesto_FK FOREIGN KEY (id_puesto) REFERENCES puestos(id_puesto),
     CONSTRAINT empleados_cedula_UNQ UNIQUE (cedula),
     CONSTRAINT empleados_email_CK CHECK (email LIKE '%@%')
 );
@@ -102,30 +102,30 @@ create table vehiculos(
     capacidad_kg DECIMAL(8,2) CONSTRAINT vehiculos_capacidad_NN NOT NULL,
     id_empleado NUMBER,
     CONSTRAINT fk_empleados_vehiculos FOREIGN KEY (id_empleado)
-    REFERENCES empleados(id)
+    REFERENCES empleados(id_empleado)
 );
 
 
 
 
 CREATE TABLE horarios_recoleccion (
-    id NUMBER ,
+    id_horarios_recoleccion NUMBER ,
     dia VARCHAR2(15) CONSTRAINT recoleccion_dia_NN NOT NULL,
     hora_inicio TIMESTAMP CONSTRAINT recoleccion_hora_inicio_NN NOT NULL,
     hora_salida TIMESTAMP CONSTRAINT recoleccion_hora_fin_NN NOT NULL,
     id_empleado NUMBER CONSTRAINT recoleccion_empleado_NN NOT NULL,
     id_ruta NUMBER,
     
-    CONSTRAINT horarios_id_PK PRIMARY KEY (id),
+    CONSTRAINT horarios_id_PK PRIMARY KEY (id_horarios_recoleccion),
     
     CONSTRAINT ck_dias CHECK (dia IN (
         'lunes', 'martes', 'miercoles', 'jueves','viernes', 'sabado', 'domingo')),
     
     CONSTRAINT horariosr_empleados_FK FOREIGN KEY (id_empleado)
-        REFERENCES empleados(id),
+        REFERENCES empleados(id_empleado),
     
     CONSTRAINT horariosr_ruta_FK FOREIGN KEY (id_ruta)
-        REFERENCES rutas(id)
+        REFERENCES rutas(id_ruta)
 );
 
 commit;
@@ -136,23 +136,23 @@ create sequence horarios_recoleccion_id_SEQ start with 1 increment by 1;
 
 // Hyun
 CREATE TABLE usuarios (
-    id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    id_usuario NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     usuario varchar2(30) CONSTRAINT usuarios_usuario_NN NOT NULL,
     contrasena varchar(30) CONSTRAINT usuarios_contrasena_NN NOT NULL,
-    id_empleado NUMBER CONSTRAINT usuarios_empleado_FK REFERENCES empleados(id)
+    id_empleado NUMBER CONSTRAINT usuarios_empleado_FK REFERENCES empleados(id_empleado)
 );
 
 CREATE TABLE reportes_empleados (
     id NUMBER CONSTRAINT reportes_empleados_PK PRIMARY KEY,
     texto VARCHAR2(2000) CONSTRAINT usuarios_texto_NN NOT NULL,
     fecha DATE CONSTRAINT usuarios_fecha_NN NOT NULL,
-    id_usuario CONSTRAINT reportes_usuarios_FK REFERENCES usuarios(id)
+    id_usuario CONSTRAINT reportes_usuarios_FK REFERENCES usuarios(id_usuario)
 );
 
 CREATE SEQUENCE reportes_empleados_id_SEQ START WITH 1 INCREMENT BY 1;
 
 CREATE TABLE residentes(
-    cedula VARCHAR2(30) CONSTRAINT residentes_cedula_PK PRIMARY KEY,
+    cedula_residente VARCHAR2(30) CONSTRAINT residentes_cedula_PK PRIMARY KEY,
     nombre VARCHAR2(20) CONSTRAINT residentes_nombre_NN NOT NULL,
     apellido VARCHAR2(20) CONSTRAINT residentes_apellido_NN NOT NULL,
     telefono VARCHAR2(20) CONSTRAINT residentes_telefono_NN NOT NULL,
@@ -165,8 +165,8 @@ CREATE TABLE reportes_residentes (
     id NUMBER GENERATED ALWAYS AS IDENTITY ,
     texto VARCHAR2(2000) CONSTRAINT reporte_residente_texto_NN NOT NULL,
     fecha DATE CONSTRAINT reporte_residente_fecha_NN NOT NULL,
-    id_residente VARCHAR2(20) CONSTRAINT reporte_residente_FK 
-    REFERENCES residentes(cedula),
+    cedula_residente VARCHAR2(20) CONSTRAINT reporte_residente_FK 
+    REFERENCES residentes(cedula_residente),
     
     CONSTRAINT reportes_residentes_PK PRIMARY KEY (id)
 );
@@ -178,8 +178,8 @@ CREATE TABLE rutas_contenedores_ubicaciones(
     id_ruta NUMBER,
     id_ubi_cont NUMBER,
     CONSTRAINT RCU_PK PRIMARY KEY(id_ruta, id_ubi_cont),
-    CONSTRAINT RCU_rutas_FK FOREIGN KEY (id_ruta) REFERENCES rutas(id),
-    CONSTRAINT RCU_ubi_cont_FK FOREIGN KEY (id_ubi_cont) REFERENCES ubicacion_contenedores(id)
+    CONSTRAINT RCU_rutas_FK FOREIGN KEY (id_ruta) REFERENCES rutas(id_ruta),
+    CONSTRAINT RCU_ubi_cont_FK FOREIGN KEY (id_ubi_cont) REFERENCES ubicacion_contenedores(id_ubicacion)
 );
 
 
@@ -187,19 +187,19 @@ CREATE TABLE rutas_contenedores_ubicaciones(
 
 
 // Luis
-INSERT INTO destino_final(id, nombre, tipo, latitud, longitud) VALUES
+INSERT INTO destino_final(id_destino_final, nombre, tipo, latitud, longitud) VALUES
 ( destino_id_SEQ.NEXTVAL, 'Bsdro. la tita', 'Basudero', 38.234567, 212.345689);
 
-INSERT INTO destino_final(id, nombre, tipo, latitud, longitud) VALUES
+INSERT INTO destino_final(id_destino_final, nombre, tipo, latitud, longitud) VALUES
 (destino_id_SEQ.NEXTVAL,'Rclect. Gutierrez', 'Planta recolectora', 18.346718, 530.345682);
 
-INSERT INTO destino_final(id, nombre, tipo, latitud, longitud) VALUES
+INSERT INTO destino_final(id_destino_final, nombre, tipo, latitud, longitud) VALUES
 (destino_id_SEQ.NEXTVAL,'transf. la estrella', 'Punto de transferencia', 48.234612, 100.3468);
 
-INSERT INTO destino_final(id, nombre, tipo, latitud, longitud) VALUES
+INSERT INTO destino_final(id_destino_final, nombre, tipo, latitud, longitud) VALUES
 (destino_id_SEQ.NEXTVAL,'transf. de cancela', 'Punto de transferencia', 38.234567, 212.34568);
 
-INSERT INTO destino_final(id, nombre, tipo, latitud, longitud) VALUES
+INSERT INTO destino_final(id_destino_final, nombre, tipo, latitud, longitud) VALUES
 (destino_id_SEQ.NEXTVAL,'Bsdro. de Cancela', 'Basudero', 23.45679, 453.4568);
 
 
@@ -236,19 +236,20 @@ INSERT INTO RUTAS (nombre, id_zona, id_destino_final) VALUES
 
 commit;
 
-SELECT * FROM destino_final ORDER BY ID DESC;
+SELECT * FROM destino_final ORDER BY id_destino_final DESC;
 SELECT * FROM rutas ORDER BY ID_DESTINO_FINAL;
-SELECT * FROM zonas ORDER BY ID ASC;
+SELECT * FROM zonas ORDER BY ID_zona ASC;
 
-UPDATE rutas SET id_destino_final = 5 WHERE id = 1;
-UPDATE rutas SET id_destino_final = 4 WHERE id = 3;
-UPDATE rutas SET id_destino_final = 3 WHERE id = 4;
+UPDATE rutas SET id_destino_final = 5 WHERE id_ruta = 1;
+UPDATE rutas SET id_destino_final = 4 WHERE id_ruta = 3;
+UPDATE rutas SET id_destino_final = 3 WHERE id_ruta = 4;
 
 commit;
+rollback;
 
-DELETE rutas WHERE id = 6;
-DELETE rutas WHERE id = 5;
-DELETE rutas WHERE id = 4;
+DELETE rutas WHERE id_ruta = 6;
+DELETE rutas WHERE id_ruta = 5;
+DELETE rutas WHERE id_ruta = 4;
 
 commit;
 
@@ -303,25 +304,26 @@ values('E087765', 'Mitsubishi','Camion volqueta', 15000.00, null );
 commit;
 
 
-insert into horarios_recoleccion (id,dia, hora_inicio, hora_salida, 
-id_empleado, id_ruta) values (horarios_recoleccion_id_SEQ.nextval, 'lunes', to_timestamp('02-06-2025 5:30:00','DD-MM-YYYY HH24:MI:SS')
+insert into horarios_recoleccion (id_horarios_recoleccion,dia, hora_inicio, hora_salida, id_empleado, id_ruta) 
+values (horarios_recoleccion_id_SEQ.nextval, 'lunes', to_timestamp('02-06-2025 5:30:00','DD-MM-YYYY HH24:MI:SS')
 ,to_timestamp('02-06-2025 8:30:00','DD-MM-YYYY HH24:MI:SS'),1,1);
 
-insert into horarios_recoleccion (id,dia, hora_inicio, hora_salida, 
-id_empleado, id_ruta) values (horarios_recoleccion_id_SEQ.nextval, 'lunes', to_timestamp('02-06-2025 1:00:00', 'DD-MM-YYYY HH24:MI:SS')
+insert into horarios_recoleccion (id_horarios_recoleccion,dia, hora_inicio, hora_salida, id_empleado, id_ruta) 
+values (horarios_recoleccion_id_SEQ.nextval, 'lunes', to_timestamp('02-06-2025 1:00:00', 'DD-MM-YYYY HH24:MI:SS')
 ,to_timestamp('02-06-2025 4:00:00','DD-MM-YYYY HH24:MI:SS' ),1,2);
 
-insert into horarios_recoleccion (id,dia, hora_inicio, hora_salida, 
-id_empleado, id_ruta) values (horarios_recoleccion_id_SEQ.nextval, 'martes', to_timestamp('03-06-2025 2:00:00','DD-MM-YYYY HH24:MI:SS')
+insert into horarios_recoleccion (id_horarios_recoleccion,dia, hora_inicio, hora_salida, id_empleado, id_ruta) 
+values (horarios_recoleccion_id_SEQ.nextval, 'martes', to_timestamp('03-06-2025 2:00:00','DD-MM-YYYY HH24:MI:SS')
 ,to_timestamp('03-06-2025 5:00:00','DD-MM-YYYY HH24:MI:SS'),2,3);
 
-insert into horarios_recoleccion (id, dia, hora_inicio, hora_salida, 
-id_empleado, id_ruta) values (horarios_recoleccion_id_SEQ.nextval, 'miercoles', to_timestamp('04-06-2025 2:00:00','DD-MM-YYYY HH24:MI:SS')
+insert into horarios_recoleccion (id_horarios_recoleccion,dia, hora_inicio, hora_salida, id_empleado, id_ruta) 
+values (horarios_recoleccion_id_SEQ.nextval, 'miercoles', to_timestamp('04-06-2025 2:00:00','DD-MM-YYYY HH24:MI:SS')
 ,to_timestamp('04-06-2025 5:00:00','DD-MM-YYYY HH24:MI:SS'),1,2);
 
-insert into horarios_recoleccion (id, dia, hora_inicio, hora_salida, 
-id_empleado, id_ruta) values (horarios_recoleccion_id_SEQ.nextval, 'jueves', to_timestamp('05-06-2025 7:00:00','DD-MM-YYYY HH24:MI:SS')
+insert into horarios_recoleccion (id_horarios_recoleccion,dia, hora_inicio, hora_salida, id_empleado, id_ruta) 
+values (horarios_recoleccion_id_SEQ.nextval, 'jueves', to_timestamp('05-06-2025 7:00:00','DD-MM-YYYY HH24:MI:SS')
 ,to_timestamp('05-06-2025 10:00:00','DD-MM-YYYY HH24:MI:SS' ),2,1);
+
 
 commit;
 
@@ -333,82 +335,82 @@ select * from vehiculos
 order by capacidad_kg asc;
 
 update empleados set cedula = '001-0000001-1'
-where id = 1;
+where id_empleado = 1;
 
 update empleados set cedula = '001-1285166-2'
-where id = 2;
+where id_empleado = 2;
 
 update empleados set cedula = '402-2805132-8'
-where id = 3;
+where id_empleado = 3;
 
 update empleados set cedula = '402-3779206-0'
-where id = 4;
+where id_empleado = 4;
 
 update empleados set cedula = '402-2502119-1'
-where id = 5;
+where id_empleado = 5;
 
 update empleados set id_puesto = 1
-where id = 2;
+where id_empleado = 2;
 
 commit;
 
 
-delete from horarios_recoleccion where id = 2;
-delete from horarios_recoleccion where id = 4;
-delete from horarios_recoleccion where id = 5;
+delete from horarios_recoleccion where id_horarios_recoleccion = 2;
+delete from horarios_recoleccion where id_horarios_recoleccion = 4;
+delete from horarios_recoleccion where id_horarios_recoleccion = 5;
 
 commit;
 
 
 
 //Kevyn
-INSERT INTO residentes (cedula, nombre, apellido, telefono, email, codigo_postal)
+INSERT INTO residentes (cedula_residente, nombre, apellido, telefono, email, codigo_postal)
 VALUES ('001-1234567-8', 'Pedro', 'Martínez', '8091234567', 'pedro.martinez@email.com', '10101');
 
-INSERT INTO residentes (cedula, nombre, apellido, telefono, email, codigo_postal)
+INSERT INTO residentes (cedula_residente, nombre, apellido, telefono, email, codigo_postal)
 VALUES ('002-7654321-3', 'Juana', 'Pérez', '8297654321', 'juana.perez@email.com', '10202');
 
-INSERT INTO residentes (cedula, nombre, apellido, telefono, email, codigo_postal)
+INSERT INTO residentes (cedula_residente, nombre, apellido, telefono, email, codigo_postal)
 VALUES ('003-1112233-7', 'Carlos', 'Gómez', '8491112233', 'carlos.gomez@email.com', '10303');
 
-INSERT INTO residentes (cedula, nombre, apellido, telefono, email, codigo_postal)
+INSERT INTO residentes (cedula_residente, nombre, apellido, telefono, email, codigo_postal)
 VALUES ('004-9998888-1', 'Lucía', 'Fernández', '8099998888', 'lucia.fernandez@email.com', '10404');
 
-INSERT INTO residentes (cedula, nombre, apellido, telefono, email, codigo_postal)
+INSERT INTO residentes (cedula_residente, nombre, apellido, telefono, email, codigo_postal)
 VALUES ('005-5556666-4', 'José', 'Ramírez', '8295556666', 'jose.ramirez@email.com', '10505');
 
 COMMIT;
 
-INSERT INTO reportes_residentes (texto, fecha, id_residente) VALUES
+INSERT INTO reportes_residentes (texto, fecha, cedula_residente) VALUES
 ('Reporte de ruido excesivo durante la noche', TO_DATE('2025-06-01', 'YYYY-MM-DD'), '001-1234567-8');
 
-INSERT INTO reportes_residentes (texto, fecha, id_residente) VALUES
+INSERT INTO reportes_residentes (texto, fecha, cedula_residente) VALUES
 ('Queja por mal estado del parque cercano', TO_DATE('2025-06-02', 'YYYY-MM-DD'), '002-7654321-3');
 
-INSERT INTO reportes_residentes (texto, fecha, id_residente) VALUES
+INSERT INTO reportes_residentes (texto, fecha, cedula_residente) VALUES
 ('Solicitud de reparación de alumbrado público', TO_DATE('2025-06-03', 'YYYY-MM-DD'), '003-1112233-7');
 
-INSERT INTO reportes_residentes (texto, fecha, id_residente) VALUES
+INSERT INTO reportes_residentes (texto, fecha, cedula_residente) VALUES
 ('Reporte de basura acumulada en la vía', TO_DATE('2025-06-04', 'YYYY-MM-DD'), '004-9998888-1');
 
-INSERT INTO reportes_residentes (texto, fecha, id_residente) VALUES
+INSERT INTO reportes_residentes (texto, fecha, cedula_residente) VALUES
 ('Problemas con el suministro de agua', TO_DATE('2025-06-05', 'YYYY-MM-DD'), '005-5556666-4');
 
 COMMIT;
 
-INSERT INTO ubicacion_contenedores (id, latitud, longitud, descripcion, id_zona) VALUES
+INSERT INTO ubicacion_contenedores (id_ubicacion, latitud, longitud, descripcion, id_zona) VALUES
 (ubi_cont_id_SEQ.NEXTVAL, 18.4750, -69.8900, 'Contenedor frente al parque Independencia', 1);
 
-INSERT INTO ubicacion_contenedores (id, latitud, longitud, descripcion, id_zona) VALUES
+INSERT INTO ubicacion_contenedores (id_ubicacion, latitud, longitud, descripcion, id_zona) VALUES
 (ubi_cont_id_SEQ.NEXTVAL, 19.4501, -70.6944, 'Contenedor en la esquina de la Calle del Sol', 2);
 
-INSERT INTO ubicacion_contenedores (id, latitud, longitud, descripcion, id_zona) VALUES
+INSERT INTO ubicacion_contenedores (id_ubicacion, latitud, longitud, descripcion, id_zona) VALUES
 (ubi_cont_id_SEQ.NEXTVAL, 19.2205, -70.5305, 'Contenedor cerca del mercado de La Vega', 3);
 
-INSERT INTO ubicacion_contenedores (id, latitud, longitud, descripcion, id_zona) VALUES
+INSERT INTO ubicacion_contenedores (id_ubicacion, latitud, longitud, descripcion, id_zona) VALUES
 (ubi_cont_id_SEQ.NEXTVAL, 18.5671, -68.3671, 'Contenedor en la entrada de Punta Cana Village', 4);
 
-INSERT INTO ubicacion_contenedores (id, latitud, longitud, descripcion, id_zona) VALUES
+INSERT INTO ubicacion_contenedores (id_ubicacion, latitud, longitud, descripcion, id_zona) VALUES
 (ubi_cont_id_SEQ.NEXTVAL, 19.7951, -70.6899, 'Contenedor próximo al malecón de Puerto Plata', 5);
 
 
@@ -422,15 +424,15 @@ COMMIT;
 
 UPDATE ubicacion_contenedores
 SET descripcion = 'Contenedor detrás del parque Independencia'
-WHERE id = 1;
+WHERE id_ubicacion = 1;
 
 UPDATE ubicacion_contenedores
 SET latitud = 19.4505, longitud = -70.6955
-WHERE id = 2;
+WHERE id_ubicacion = 2;
 
 UPDATE ubicacion_contenedores
 SET descripcion = 'Contenedor removido temporalmente por mantenimiento'
-WHERE id = 5;
+WHERE id_ubicacion = 5;
 
 COMMIT;
 
@@ -462,18 +464,11 @@ INSERT INTO sensores (serial, marca) VALUES (8915568, 'CleanScan');
 INSERT INTO sensores (serial, marca) VALUES (8469470, 'BinSmart');
 
 
-INSERT INTO tipo_residuo (id, descripcion) VALUES (sq_mrgarcia.nextval, 'Organico');
-INSERT INTO tipo_residuo (id, descripcion) VALUES (sq_mrgarcia.nextval, 'vidrio');
-INSERT INTO tipo_residuo (id, descripcion) VALUES (sq_mrgarcia.nextval, 'plastico');
-INSERT INTO tipo_residuo (id, descripcion) VALUES (sq_mrgarcia.nextval, 'papel');
-INSERT INTO tipo_residuo (id, descripcion) VALUES (sq_mrgarcia.nextval, 'carton');
-
-
-
-
-
-
-
+INSERT INTO tipo_residuo (id_tipo_residuo, descripcion) VALUES (sq_mrgarcia.nextval, 'Organico');
+INSERT INTO tipo_residuo (id_tipo_residuo, descripcion) VALUES (sq_mrgarcia.nextval, 'vidrio');
+INSERT INTO tipo_residuo (id_tipo_residuo, descripcion) VALUES (sq_mrgarcia.nextval, 'plastico');
+INSERT INTO tipo_residuo (id_tipo_residuo, descripcion) VALUES (sq_mrgarcia.nextval, 'papel');
+INSERT INTO tipo_residuo (id_tipo_residuo, descripcion) VALUES (sq_mrgarcia.nextval, 'carton');
 
 
 INSERT INTO contenedores(estado, capacidad_kg, ultimo_mantenimiento, id_ubicacion, id_tipo_residuo)
@@ -491,6 +486,7 @@ VALUES('nuevo', 200, TO_DATE('2025-05-01', 'YYYY-MM-DD'), 4, 1);
 INSERT INTO contenedores(estado, capacidad_kg, ultimo_mantenimiento, id_ubicacion, id_tipo_residuo)
 VALUES('dañado', 130, TO_DATE('2024-05-10', 'YYYY-MM-DD'), 5, 4);
 
+COMMIT;
 
 
 // selects
@@ -498,6 +494,7 @@ VALUES('dañado', 130, TO_DATE('2024-05-10', 'YYYY-MM-DD'), 5, 4);
 SELECT * FROM contenedores ORDER BY ultimo_mantenimiento;
 SELECT * FROM sensores ORDER BY serial;
 SELECT * FROM ubicacion_contenedores;
+COMMIT;
 
 
 // updates
@@ -505,14 +502,16 @@ SELECT * FROM ubicacion_contenedores;
 UPDATE contenedores SET capacidad_kg = 130 WHERE id_contenedor = 1;
 UPDATE ubicacion_contenedores SET Descripcion = 'Residencial Los Almirantes' WHERE descripcion = 'Residencial Los prados';
 UPDATE contenedores SET estado = 'nuevo' WHERE ultimo_mantenimiento > TO_DATE('2025-01-01', 'YYYY-MM-DD');
-
+COMMIT;
 
 // deletes
 
-DELETE FROM ubicacion_contenedores WHERE id = 1;
+select * from ubicacion_contenedores;
+DELETE FROM ubicacion_contenedores WHERE id_ubicacion = 1;
 DELETE FROM sensores WHERE serial = 5081781;
-DELETE FROM tipo_residuo WHERE id = 5;
+DELETE FROM tipo_residuo WHERE id_tipo_residuo = 5;
 
+Commit;
 
 
 
@@ -534,6 +533,7 @@ values ('Robert', '1234', 4);
 INSERT INTO usuarios (usuario, contrasena, id_empleado)
 values ('Maria', '1234', 5);
 
+Commit;
 
 INSERT INTO reportes_empleados(id, texto, fecha, id_usuario)
 values(reportes_empleados_id_SEQ.nextval, 'Se ha recolectado correctamente la basura', to_date('12-03-2009', 'DD-MM-YYYY'), 2);
@@ -549,7 +549,6 @@ values(reportes_empleados_id_SEQ.nextval, 'El contenedor estaba vacio', to_date(
 
 INSERT INTO reportes_empleados(id, texto, fecha, id_usuario)
 values(reportes_empleados_id_SEQ.nextval, 'Se ha recolectado correctamente la basura', to_date('12-03-2009', 'DD-MM-YYYY'), 2);
-
 
 INSERT INTO rutas_contenedores_ubicaciones(id_ruta, id_ubi_cont) 
 values(1, 1);
@@ -569,11 +568,11 @@ values(3, 5);
 INSERT INTO rutas_contenedores_ubicaciones(id_ruta, id_ubi_cont) 
 values(3, 1);
 
-
+Commit;
 
 SELECT * FROM usuarios ORDER BY id_empleado;
 SELECT * FROM reportes_empleados;
-
+/* Comente esta seccion para que haiga regitros en rutas_contenedores_ubicaciones - luis
 update rutas_contenedores_ubicaciones set id_ubi_cont = 3 where id_ruta = 1 and id_ubi_cont = 1;
 update rutas_contenedores_ubicaciones set id_ubi_cont = 5 where id_ruta = 2 and id_ubi_cont = 3;
 update rutas_contenedores_ubicaciones set id_ubi_cont = 2 where id_ruta = 3 and id_ubi_cont = 1;
@@ -583,4 +582,7 @@ update rutas_contenedores_ubicaciones set id_ubi_cont = 2 where id_ruta = 3 and 
 DELETE FROM rutas_contenedores_ubicaciones where id_ruta = 1;
 DELETE FROM rutas_contenedores_ubicaciones where id_ruta = 2;
 DELETE FROM rutas_contenedores_ubicaciones where id_ruta = 3;
+*/
 
+commit;
+// Practica 4
