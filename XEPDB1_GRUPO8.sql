@@ -1,27 +1,27 @@
 // luis
 CREATE TABLE destino_final(
-    id_destino_final NUMBER CONSTRAINT destino_id_PK PRIMARY KEY,
-    nombre VARCHAR2(30) CONSTRAINT destino_nombre_NN NOT NULL,
-    tipo VARCHAR2(30) CONSTRAINT destino_tipo_NN NOT NULL,
-    latitud DECIMAL(8,6) CONSTRAINT destino_latitud_NN NOT NULL,
-    longitud DECIMAL(9,6) CONSTRAINT destino_longitud_NN NOT NULL,
-    CONSTRAINT destino_tipo_CK CHECK(tipo IN ('Planta recolectora', 'Punto de transferencia', 'Basudero'))
+    id_destino_final NUMBER CONSTRAINT destino_id_pk PRIMARY KEY,
+    nombre VARCHAR2(30) CONSTRAINT destino_nombre_nn NOT NULL,
+    tipo VARCHAR2(30) CONSTRAINT destino_tipo_nn NOT NULL,
+    latitud DECIMAL(8,6) CONSTRAINT destino_latitud_nn NOT NULL,
+    longitud DECIMAL(9,6) CONSTRAINT destino_longitud_nn NOT NULL,
+    CONSTRAINT destino_tipo_ck CHECK(tipo IN ('Planta recolectora', 'Punto de transferencia', 'Basudero'))
 );
 
-CREATE SEQUENCE destino_id_SEQ START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE destino_id_seq START WITH 1 INCREMENT BY 1;
 
 CREATE TABLE zonas (
     id_zona NUMBER GENERATED ALWAYS AS IDENTITY,
-    nombre VARCHAR2(30) CONSTRAINT zonas_nombre_NN NOT NULL,
-    CONSTRAINT zonas_id_PK PRIMARY KEY (id_zona)
+    nombre VARCHAR2(30) CONSTRAINT zonas_nombre_nn NOT NULL,
+    CONSTRAINT zonas_id_pk PRIMARY KEY (id_zona)
 );
 
 CREATE TABLE rutas(
     id_ruta NUMBER GENERATED ALWAYS AS IDENTITY,
-    nombre VARCHAR2(30) CONSTRAINT rutas_nombre_NN NOT NULL,
-    id_zona NUMBER CONSTRAINT rutas_zona_FK REFERENCES zonas(id_zona),
-    id_destino_final CONSTRAINT rutas_destino_FK REFERENCES destino_final(id_destino_final),
-    CONSTRAINT rutas_id_PK PRIMARY KEY (id_ruta)
+    nombre VARCHAR2(30) CONSTRAINT rutas_nombre_nn NOT NULL,
+    id_zona NUMBER CONSTRAINT rutas_zona_fk REFERENCES zonas(id_zona),
+    id_destino_final CONSTRAINT rutas_destino_fk REFERENCES destino_final(id_destino_final),
+    CONSTRAINT rutas_id_pk PRIMARY KEY (id_ruta)
 );
 
 
@@ -29,38 +29,38 @@ CREATE TABLE rutas(
 
 // kevin
 CREATE TABLE sensores(
-    serial NUMBER CONSTRAINT sensores_serial_PK PRIMARY KEY,
-    marca VARCHAR(50) CONSTRAINT sensores_marca_NN NOT NULL
+    serial NUMBER CONSTRAINT sensores_serial_pk PRIMARY KEY,
+    marca VARCHAR(50) CONSTRAINT sensores_marca_nn NOT NULL
 );
 
 CREATE TABLE tipo_residuo(
-    id_tipo_residuo NUMBER CONSTRAINT tipo_residuo_id_PK PRIMARY KEY,
-    descripcion VARCHAR(255) CONSTRAINT tipo_residuo_descripcion_NN NOT NULL
+    id_tipo_residuo NUMBER CONSTRAINT tipo_residuo_id_pk PRIMARY KEY,
+    descripcion VARCHAR(255) CONSTRAINT tipo_residuo_descripcion_nn NOT NULL
 );
 
-CREATE SEQUENCE tipo_residuo_id_SEQ START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE tipo_residuo_id_seq START WITH 1 INCREMENT BY 1;
 
 CREATE TABLE ubicacion_contenedores(
-    id_ubicacion NUMBER CONSTRAINT ubi_cont_id_PK PRIMARY KEY,
+    id_ubicacion NUMBER CONSTRAINT ubi_cont_id_pk PRIMARY KEY,
     latitud DECIMAL(8,6),
     longitud DECIMAL(9,6),
-    descripcion VARCHAR2(255) CONSTRAINT ubi_cont_NN NOT NULL,
+    descripcion VARCHAR2(255) CONSTRAINT ubi_cont_nn NOT NULL,
     id_zona NUMBER CONSTRAINT ubi_cont_zona REFERENCES zonas(id_zona)
 );
 
-CREATE SEQUENCE ubi_cont_id_SEQ START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE ubi_cont_id_seq START WITH 1 INCREMENT BY 1;
 
 CREATE TABLE contenedores(
     id_contenedor NUMBER  GENERATED ALWAYS AS IDENTITY,
-    estado VARCHAR2(40) CONSTRAINT contenedores_estado_NN NOT NULL,
-    capacidad_kg NUMBER CONSTRAINT contenedores_capacidad_NN NOT NULL,
+    estado VARCHAR2(40) CONSTRAINT contenedores_estado_nn NOT NULL,
+    capacidad_kg NUMBER CONSTRAINT contenedores_capacidad_nn NOT NULL,
     ultimo_mantenimiento DATE,
     id_ubicacion NUMBER,
     id_tipo_residuo NUMBER,
-    CONSTRAINT contenedores_id_PK PRIMARY KEY (id_contenedor),
-    CONSTRAINT contenedores_ubicacion_FK FOREIGN KEY (id_ubicacion) REFERENCES ubicacion_contenedores(id_ubicacion),
-    CONSTRAINT contenedores_tipo_residuo_FK FOREIGN KEY(id_tipo_residuo) REFERENCES tipo_residuo(id_tipo_residuo),
-    CONSTRAINT contenedores_estado_CK
+    CONSTRAINT contenedores_id_pk PRIMARY KEY (id_contenedor),
+    CONSTRAINT contenedores_ubicacion_fk FOREIGN KEY (id_ubicacion) REFERENCES ubicacion_contenedores(id_ubicacion),
+    CONSTRAINT contenedores_tipo_residuo_fk FOREIGN KEY(id_tipo_residuo) REFERENCES tipo_residuo(id_tipo_residuo),
+    CONSTRAINT contenedores_estado_ck
     CHECK(estado IN('nuevo', 'en uso', 'lleno', 'vacio', 'dañado', 'perdido', 'fuera de servicio'))
 );
 
@@ -71,35 +71,35 @@ CREATE TABLE contenedores(
 
 // Leam
 // tablas creadas y constraints que creia pertinentes para cada una
-create table puestos(
+CREATE TABLE puestos(
     id_puesto NUMBER GENERATED ALWAYS AS IDENTITY,
-    descripcion varchar2(255) CONSTRAINT puestos_descripcion_NN NOT NULL,
-    CONSTRAINT puestos_id_PK PRIMARY KEY (id_puesto)
+    descripcion VARCHAR2(255) CONSTRAINT puestos_descripcion_nn NOT NULL,
+    CONSTRAINT puestos_id_pk PRIMARY KEY (id_puesto)
 );
     
 CREATE TABLE empleados(
     id_empleado NUMBER GENERATED ALWAYS AS IDENTITY, 
-    nombre VARCHAR2(40) CONSTRAINT empleados_nombre_NN NOT NULL,
-    apellido VARCHAR2(40) CONSTRAINT empleados_apellido_NN NOT NULL,
-    cedula VARCHAR2(40) CONSTRAINT empleados_cedula_NN NOT NULL,
+    nombre VARCHAR2(40) CONSTRAINT empleados_nombre_nn NOT NULL,
+    apellido VARCHAR2(40) CONSTRAINT empleados_apellido_nn NOT NULL,
+    cedula VARCHAR2(40) CONSTRAINT empleados_cedula_nn NOT NULL,
     fecha_liquidacion DATE,
     email VARCHAR2(60),
-    fecha_nacimiento DATE CONSTRAINT empleados_fecha_nacimiento_NN NOT NULL,
-    fecha_contratacion DATE CONSTRAINT empleados_fecha_contratacion_NN NOT NULL,
-    id_puesto NUMBER CONSTRAINT empleados_puesto_NN NOT NULL,
+    fecha_nacimiento DATE CONSTRAINT empleados_fecha_nacimiento_nn NOT NULL,
+    fecha_contratacion DATE CONSTRAINT empleados_fecha_contratacion_nn NOT NULL,
+    id_puesto NUMBER CONSTRAINT empleados_puesto_nn NOT NULL,
     CONSTRAINT empleados_id_pk PRIMARY KEY (id_empleado),
-    CONSTRAINT empleados_puesto_FK FOREIGN KEY (id_puesto) REFERENCES puestos(id_puesto),
-    CONSTRAINT empleados_cedula_UNQ UNIQUE (cedula),
-    CONSTRAINT empleados_email_CK CHECK (email LIKE '%@%')
+    CONSTRAINT empleados_puesto_fk FOREIGN KEY (id_puesto) REFERENCES puestos(id_puesto),
+    CONSTRAINT empleados_cedula_unq UNIQUE (cedula),
+    CONSTRAINT empleados_email_ck CHECK (email LIKE '%@%')
 );
 
 
 
-create table vehiculos(
-    matricula VARCHAR2(40) CONSTRAINT vehiculos_matricula_PK PRIMARY KEY,
+CREATE TABLE vehiculos(
+    matricula VARCHAR2(40) CONSTRAINT vehiculos_matricula_pk PRIMARY KEY,
     marca VARCHAR2(40),
     tipo_vehiculo VARCHAR2(40),
-    capacidad_kg DECIMAL(8,2) CONSTRAINT vehiculos_capacidad_NN NOT NULL,
+    capacidad_kg DECIMAL(8,2) CONSTRAINT vehiculos_capacidad_nn NOT NULL,
     id_empleado NUMBER,
     CONSTRAINT fk_empleados_vehiculos FOREIGN KEY (id_empleado)
     REFERENCES empleados(id_empleado)
@@ -110,65 +110,65 @@ create table vehiculos(
 
 CREATE TABLE horarios_recoleccion (
     id_horarios_recoleccion NUMBER ,
-    dia VARCHAR2(15) CONSTRAINT recoleccion_dia_NN NOT NULL,
-    hora_inicio TIMESTAMP CONSTRAINT recoleccion_hora_inicio_NN NOT NULL,
-    hora_salida TIMESTAMP CONSTRAINT recoleccion_hora_fin_NN NOT NULL,
-    id_empleado NUMBER CONSTRAINT recoleccion_empleado_NN NOT NULL,
+    dia VARCHAR2(15) CONSTRAINT recoleccion_dia_nn NOT NULL,
+    hora_inicio TIMESTAMP CONSTRAINT recoleccion_hora_inicio_nn NOT NULL,
+    hora_salida TIMESTAMP CONSTRAINT recoleccion_hora_fin_nn NOT NULL,
+    id_empleado NUMBER CONSTRAINT recoleccion_empleado_nn NOT NULL,
     id_ruta NUMBER,
     
-    CONSTRAINT horarios_id_PK PRIMARY KEY (id_horarios_recoleccion),
+    CONSTRAINT horarios_id_pk PRIMARY KEY (id_horarios_recoleccion),
     
     CONSTRAINT ck_dias CHECK (dia IN (
         'lunes', 'martes', 'miercoles', 'jueves','viernes', 'sabado', 'domingo')),
     
-    CONSTRAINT horariosr_empleados_FK FOREIGN KEY (id_empleado)
+    CONSTRAINT horariosr_empleados_fk FOREIGN KEY (id_empleado)
         REFERENCES empleados(id_empleado),
     
-    CONSTRAINT horariosr_ruta_FK FOREIGN KEY (id_ruta)
+    CONSTRAINT horariosr_ruta_fk FOREIGN KEY (id_ruta)
         REFERENCES rutas(id_ruta)
 );
 
-commit;
+COMMIT;
 
-create sequence horarios_recoleccion_id_SEQ start with 1 increment by 1;
+CREATE SEQUENCE horarios_recoleccion_id_seq START WITH 1 INCREMENT BY 1;
 
 
 
 // Hyun
 CREATE TABLE usuarios (
     id_usuario NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    usuario varchar2(30) CONSTRAINT usuarios_usuario_NN NOT NULL,
-    contrasena varchar(30) CONSTRAINT usuarios_contrasena_NN NOT NULL,
-    id_empleado NUMBER CONSTRAINT usuarios_empleado_FK REFERENCES empleados(id_empleado)
+    usuario VARCHAR2(30) CONSTRAINT usuarios_usuario_nn NOT NULL,
+    contrasena VARCHAR(30) CONSTRAINT usuarios_contrasena_nn NOT NULL,
+    id_empleado NUMBER CONSTRAINT usuarios_empleado_fk REFERENCES empleados(id_empleado)
 );
 
 CREATE TABLE reportes_empleados (
-    id NUMBER CONSTRAINT reportes_empleados_PK PRIMARY KEY,
-    texto VARCHAR2(2000) CONSTRAINT usuarios_texto_NN NOT NULL,
-    fecha DATE CONSTRAINT usuarios_fecha_NN NOT NULL,
-    id_usuario CONSTRAINT reportes_usuarios_FK REFERENCES usuarios(id_usuario)
+    ID NUMBER CONSTRAINT reportes_empleados_pk PRIMARY KEY,
+    texto VARCHAR2(2000) CONSTRAINT usuarios_texto_nn NOT NULL,
+    fecha DATE CONSTRAINT usuarios_fecha_nn NOT NULL,
+    id_usuario CONSTRAINT reportes_usuarios_fk REFERENCES usuarios(id_usuario)
 );
 
-CREATE SEQUENCE reportes_empleados_id_SEQ START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE reportes_empleados_id_seq START WITH 1 INCREMENT BY 1;
 
 CREATE TABLE residentes(
-    cedula_residente VARCHAR2(30) CONSTRAINT residentes_cedula_PK PRIMARY KEY,
-    nombre VARCHAR2(20) CONSTRAINT residentes_nombre_NN NOT NULL,
-    apellido VARCHAR2(20) CONSTRAINT residentes_apellido_NN NOT NULL,
-    telefono VARCHAR2(20) CONSTRAINT residentes_telefono_NN NOT NULL,
-    email VARCHAR2(50) CONSTRAINT residentes_email_NN NOT NULL,
-    codigo_postal VARCHAR2(10) CONSTRAINT usuarios_postal_NN NOT NULL,
-    CONSTRAINT residentes_email_CK CHECK(email like '%@%')
+    cedula_residente VARCHAR2(30) CONSTRAINT residentes_cedula_pk PRIMARY KEY,
+    nombre VARCHAR2(20) CONSTRAINT residentes_nombre_nn NOT NULL,
+    apellido VARCHAR2(20) CONSTRAINT residentes_apellido_nn NOT NULL,
+    telefono VARCHAR2(20) CONSTRAINT residentes_telefono_nn NOT NULL,
+    email VARCHAR2(50) CONSTRAINT residentes_email_nn NOT NULL,
+    codigo_postal VARCHAR2(10) CONSTRAINT usuarios_postal_nn NOT NULL,
+    CONSTRAINT residentes_email_ck CHECK(email LIKE '%@%')
 );
 
 CREATE TABLE reportes_residentes (
-    id NUMBER GENERATED ALWAYS AS IDENTITY ,
-    texto VARCHAR2(2000) CONSTRAINT reporte_residente_texto_NN NOT NULL,
-    fecha DATE CONSTRAINT reporte_residente_fecha_NN NOT NULL,
-    cedula_residente VARCHAR2(20) CONSTRAINT reporte_residente_FK 
+    ID NUMBER GENERATED ALWAYS AS IDENTITY ,
+    texto VARCHAR2(2000) CONSTRAINT reporte_residente_texto_nn NOT NULL,
+    fecha DATE CONSTRAINT reporte_residente_fecha_nn NOT NULL,
+    cedula_residente VARCHAR2(20) CONSTRAINT reporte_residente_fk 
     REFERENCES residentes(cedula_residente),
     
-    CONSTRAINT reportes_residentes_PK PRIMARY KEY (id)
+    CONSTRAINT reportes_residentes_pk PRIMARY KEY (ID)
 );
 
 
@@ -177,9 +177,9 @@ CREATE TABLE reportes_residentes (
 CREATE TABLE rutas_contenedores_ubicaciones(
     id_ruta NUMBER,
     id_ubi_cont NUMBER,
-    CONSTRAINT RCU_PK PRIMARY KEY(id_ruta, id_ubi_cont),
-    CONSTRAINT RCU_rutas_FK FOREIGN KEY (id_ruta) REFERENCES rutas(id_ruta),
-    CONSTRAINT RCU_ubi_cont_FK FOREIGN KEY (id_ubi_cont) REFERENCES ubicacion_contenedores(id_ubicacion)
+    CONSTRAINT rcu_pk PRIMARY KEY(id_ruta, id_ubi_cont),
+    CONSTRAINT rcu_rutas_fk FOREIGN KEY (id_ruta) REFERENCES rutas(id_ruta),
+    CONSTRAINT rcu_ubi_cont_fk FOREIGN KEY (id_ubi_cont) REFERENCES ubicacion_contenedores(id_ubicacion)
 );
 
 
@@ -188,19 +188,19 @@ CREATE TABLE rutas_contenedores_ubicaciones(
 
 // Luis
 INSERT INTO destino_final(id_destino_final, nombre, tipo, latitud, longitud) VALUES
-( destino_id_SEQ.NEXTVAL, 'Bsdro. la tita', 'Basudero', 38.234567, 212.345689);
+( destino_id_seq.NEXTVAL, 'Bsdro. la tita', 'Basudero', 38.234567, 212.345689);
 
 INSERT INTO destino_final(id_destino_final, nombre, tipo, latitud, longitud) VALUES
-(destino_id_SEQ.NEXTVAL,'Rclect. Gutierrez', 'Planta recolectora', 18.346718, 530.345682);
+(destino_id_seq.NEXTVAL,'Rclect. Gutierrez', 'Planta recolectora', 18.346718, 530.345682);
 
 INSERT INTO destino_final(id_destino_final, nombre, tipo, latitud, longitud) VALUES
-(destino_id_SEQ.NEXTVAL,'transf. la estrella', 'Punto de transferencia', 48.234612, 100.3468);
+(destino_id_seq.NEXTVAL,'transf. la estrella', 'Punto de transferencia', 48.234612, 100.3468);
 
 INSERT INTO destino_final(id_destino_final, nombre, tipo, latitud, longitud) VALUES
-(destino_id_SEQ.NEXTVAL,'transf. de cancela', 'Punto de transferencia', 38.234567, 212.34568);
+(destino_id_seq.NEXTVAL,'transf. de cancela', 'Punto de transferencia', 38.234567, 212.34568);
 
 INSERT INTO destino_final(id_destino_final, nombre, tipo, latitud, longitud) VALUES
-(destino_id_SEQ.NEXTVAL,'Bsdro. de Cancela', 'Basudero', 23.45679, 453.4568);
+(destino_id_seq.NEXTVAL,'Bsdro. de Cancela', 'Basudero', 23.45679, 453.4568);
 
 
 INSERT INTO zonas (nombre) VALUES
@@ -219,147 +219,147 @@ INSERT INTO zonas (nombre) VALUES
 ('Mendoza');
 
 
-INSERT INTO RUTAS (nombre, id_zona, id_destino_final) VALUES
+INSERT INTO rutas (nombre, id_zona, id_destino_final) VALUES
 ('Ruta de la tita', 1, 1);
 
-INSERT INTO RUTAS (nombre, id_zona, id_destino_final) VALUES
+INSERT INTO rutas (nombre, id_zona, id_destino_final) VALUES
 ('Ruta hasta Gutierrez', 1, 2);
 
-INSERT INTO RUTAS (nombre, id_zona, id_destino_final) VALUES
+INSERT INTO rutas (nombre, id_zona, id_destino_final) VALUES
 ('Ruta de la estrella', 1, 3);
 
-INSERT INTO RUTAS (nombre, id_zona, id_destino_final) VALUES
+INSERT INTO rutas (nombre, id_zona, id_destino_final) VALUES
 ('Ruta de Cancela', 1, 4);
 
-INSERT INTO RUTAS (nombre, id_zona, id_destino_final) VALUES
+INSERT INTO rutas (nombre, id_zona, id_destino_final) VALUES
 ('Ruta de la tita', 1, 5);
 
-commit;
+COMMIT;
 
 SELECT * FROM destino_final ORDER BY id_destino_final DESC;
-SELECT * FROM rutas ORDER BY ID_DESTINO_FINAL;
-SELECT * FROM zonas ORDER BY ID_zona ASC;
+SELECT * FROM rutas ORDER BY id_destino_final;
+SELECT * FROM zonas ORDER BY id_zona ASC;
 
 UPDATE rutas SET id_destino_final = 5 WHERE id_ruta = 1;
 UPDATE rutas SET id_destino_final = 4 WHERE id_ruta = 3;
 UPDATE rutas SET id_destino_final = 3 WHERE id_ruta = 4;
 
-commit;
-rollback;
+COMMIT;
+ROLLBACK;
 
 DELETE rutas WHERE id_ruta = 6;
 DELETE rutas WHERE id_ruta = 5;
 DELETE rutas WHERE id_ruta = 4;
 
-commit;
+COMMIT;
 
 
 
 // Leam
-insert into puestos (descripcion) values ('operador');
-insert into puestos (descripcion) values ('recolector');
-insert into puestos (descripcion) values ('supervisor');
-insert into puestos (descripcion) values ('clasificador de residuos');
-insert into puestos (descripcion) values ('gerente');
-commit;
+INSERT INTO puestos (descripcion) VALUES ('operador');
+INSERT INTO puestos (descripcion) VALUES ('recolector');
+INSERT INTO puestos (descripcion) VALUES ('supervisor');
+INSERT INTO puestos (descripcion) VALUES ('clasificador de residuos');
+INSERT INTO puestos (descripcion) VALUES ('gerente');
+COMMIT;
 
-insert into empleados(nombre, apellido,cedula, fecha_liquidacion, email,
-fecha_nacimiento, fecha_contratacion, id_puesto ) values ('Carlos', 'Almonte Villanueva', '001-0000001-1', null,
-'carlos@gmail.com', to_date('21-03-1985', 'DD-MM-YYYY'), to_date('12-03-2009', 'DD-MM-YYYY'), 1);
+INSERT INTO empleados(nombre, apellido,cedula, fecha_liquidacion, email,
+fecha_nacimiento, fecha_contratacion, id_puesto ) VALUES ('Carlos', 'Almonte Villanueva', '001-0000001-1', NULL,
+'carlos@gmail.com', TO_DATE('21-03-1985', 'DD-MM-YYYY'), TO_DATE('12-03-2009', 'DD-MM-YYYY'), 1);
 
-insert into empleados(nombre, apellido,cedula, fecha_liquidacion, email,
-fecha_nacimiento, fecha_contratacion, id_puesto ) values ('Luis', 'Santana Peralta', '001-1285166-2', null,
-'Luissantan@gmail.com', to_date('11-09-1998', 'DD-MM-YYYY'), to_date('08-05-2011', 'DD-MM-YYYY'), 2);
+INSERT INTO empleados(nombre, apellido,cedula, fecha_liquidacion, email,
+fecha_nacimiento, fecha_contratacion, id_puesto ) VALUES ('Luis', 'Santana Peralta', '001-1285166-2', NULL,
+'Luissantan@gmail.com', TO_DATE('11-09-1998', 'DD-MM-YYYY'), TO_DATE('08-05-2011', 'DD-MM-YYYY'), 2);
 
-insert into empleados(nombre, apellido,cedula, fecha_liquidacion, email,
-fecha_nacimiento, fecha_contratacion, id_puesto ) values ('Mariano', 'Rivera Gonzalez', '402-2805132-8', null,
-null, to_date('27-02-1980', 'DD-MM-YYYY'), to_date('07-03-2002', 'DD-MM-YYYY'), 4);
+INSERT INTO empleados(nombre, apellido,cedula, fecha_liquidacion, email,
+fecha_nacimiento, fecha_contratacion, id_puesto ) VALUES ('Mariano', 'Rivera Gonzalez', '402-2805132-8', NULL,
+NULL, TO_DATE('27-02-1980', 'DD-MM-YYYY'), TO_DATE('07-03-2002', 'DD-MM-YYYY'), 4);
 
-insert into empleados(nombre, apellido,cedula, fecha_liquidacion, email,
-fecha_nacimiento, fecha_contratacion, id_puesto ) values ('Robert', 'Pascual Ariza', '402-3779206-0', null,
-'licrpascual@gmail.com', to_date('11-08-1965', 'DD-MM-YYYY'), to_date('11-03-2001', 'DD-MM-YYYY'), 5);
+INSERT INTO empleados(nombre, apellido,cedula, fecha_liquidacion, email,
+fecha_nacimiento, fecha_contratacion, id_puesto ) VALUES ('Robert', 'Pascual Ariza', '402-3779206-0', NULL,
+'licrpascual@gmail.com', TO_DATE('11-08-1965', 'DD-MM-YYYY'), TO_DATE('11-03-2001', 'DD-MM-YYYY'), 5);
 
-insert into empleados(nombre, apellido,cedula, fecha_liquidacion, email,
-fecha_nacimiento, fecha_contratacion, id_puesto ) values ('Maria Lucia', 'Holguin Rodriguez', '402-2502119-1', null,
-'marialuc@gmail.com', to_date('21-03-1986', 'DD-MM-YYYY'), to_date('12-03-2010', 'DD-MM-YYYY'), 3);
+INSERT INTO empleados(nombre, apellido,cedula, fecha_liquidacion, email,
+fecha_nacimiento, fecha_contratacion, id_puesto ) VALUES ('Maria Lucia', 'Holguin Rodriguez', '402-2502119-1', NULL,
+'marialuc@gmail.com', TO_DATE('21-03-1986', 'DD-MM-YYYY'), TO_DATE('12-03-2010', 'DD-MM-YYYY'), 3);
 
-commit;
-
-
-insert into vehiculos (matricula, marca, tipo_vehiculo, capacidad_kg, id_empleado)
-values('E104237', 'Heil','Camion volqueta', 15000.00, 1 );
-
-insert into vehiculos (matricula, marca, tipo_vehiculo, capacidad_kg, id_empleado)
-values('E096601', 'McNeilus','Camion compactador', 12500.00, 2 );
-
-insert into vehiculos (matricula, marca, tipo_vehiculo, capacidad_kg, id_empleado)
-values('E089332', 'Roger','Camion compactador', 12500.00, null );
-
-insert into vehiculos (matricula, marca, tipo_vehiculo, capacidad_kg, id_empleado)
-values('E089547', 'Isuzu','Camion doble compactador', 14000.00, null );
-
-insert into vehiculos (matricula, marca, tipo_vehiculo, capacidad_kg, id_empleado)
-values('E087765', 'Mitsubishi','Camion volqueta', 15000.00, null );
-
-commit;
+COMMIT;
 
 
-insert into horarios_recoleccion (id_horarios_recoleccion,dia, hora_inicio, hora_salida, id_empleado, id_ruta) 
-values (horarios_recoleccion_id_SEQ.nextval, 'lunes', to_timestamp('02-06-2025 5:30:00','DD-MM-YYYY HH24:MI:SS')
-,to_timestamp('02-06-2025 8:30:00','DD-MM-YYYY HH24:MI:SS'),1,1);
+INSERT INTO vehiculos (matricula, marca, tipo_vehiculo, capacidad_kg, id_empleado)
+VALUES('E104237', 'Heil','Camion volqueta', 15000.00, 1 );
 
-insert into horarios_recoleccion (id_horarios_recoleccion,dia, hora_inicio, hora_salida, id_empleado, id_ruta) 
-values (horarios_recoleccion_id_SEQ.nextval, 'lunes', to_timestamp('02-06-2025 1:00:00', 'DD-MM-YYYY HH24:MI:SS')
-,to_timestamp('02-06-2025 4:00:00','DD-MM-YYYY HH24:MI:SS' ),1,2);
+INSERT INTO vehiculos (matricula, marca, tipo_vehiculo, capacidad_kg, id_empleado)
+VALUES('E096601', 'McNeilus','Camion compactador', 12500.00, 2 );
 
-insert into horarios_recoleccion (id_horarios_recoleccion,dia, hora_inicio, hora_salida, id_empleado, id_ruta) 
-values (horarios_recoleccion_id_SEQ.nextval, 'martes', to_timestamp('03-06-2025 2:00:00','DD-MM-YYYY HH24:MI:SS')
-,to_timestamp('03-06-2025 5:00:00','DD-MM-YYYY HH24:MI:SS'),2,3);
+INSERT INTO vehiculos (matricula, marca, tipo_vehiculo, capacidad_kg, id_empleado)
+VALUES('E089332', 'Roger','Camion compactador', 12500.00, NULL );
 
-insert into horarios_recoleccion (id_horarios_recoleccion,dia, hora_inicio, hora_salida, id_empleado, id_ruta) 
-values (horarios_recoleccion_id_SEQ.nextval, 'miercoles', to_timestamp('04-06-2025 2:00:00','DD-MM-YYYY HH24:MI:SS')
-,to_timestamp('04-06-2025 5:00:00','DD-MM-YYYY HH24:MI:SS'),1,2);
+INSERT INTO vehiculos (matricula, marca, tipo_vehiculo, capacidad_kg, id_empleado)
+VALUES('E089547', 'Isuzu','Camion doble compactador', 14000.00, NULL );
 
-insert into horarios_recoleccion (id_horarios_recoleccion,dia, hora_inicio, hora_salida, id_empleado, id_ruta) 
-values (horarios_recoleccion_id_SEQ.nextval, 'jueves', to_timestamp('05-06-2025 7:00:00','DD-MM-YYYY HH24:MI:SS')
-,to_timestamp('05-06-2025 10:00:00','DD-MM-YYYY HH24:MI:SS' ),2,1);
+INSERT INTO vehiculos (matricula, marca, tipo_vehiculo, capacidad_kg, id_empleado)
+VALUES('E087765', 'Mitsubishi','Camion volqueta', 15000.00, NULL );
+
+COMMIT;
 
 
-commit;
+INSERT INTO horarios_recoleccion (id_horarios_recoleccion,dia, hora_inicio, hora_salida, id_empleado, id_ruta) 
+VALUES (horarios_recoleccion_id_seq.NEXTVAL, 'lunes', TO_TIMESTAMP('02-06-2025 5:30:00','DD-MM-YYYY HH24:MI:SS')
+,TO_TIMESTAMP('02-06-2025 8:30:00','DD-MM-YYYY HH24:MI:SS'),1,1);
+
+INSERT INTO horarios_recoleccion (id_horarios_recoleccion,dia, hora_inicio, hora_salida, id_empleado, id_ruta) 
+VALUES (horarios_recoleccion_id_seq.NEXTVAL, 'lunes', TO_TIMESTAMP('02-06-2025 1:00:00', 'DD-MM-YYYY HH24:MI:SS')
+,TO_TIMESTAMP('02-06-2025 4:00:00','DD-MM-YYYY HH24:MI:SS' ),1,2);
+
+INSERT INTO horarios_recoleccion (id_horarios_recoleccion,dia, hora_inicio, hora_salida, id_empleado, id_ruta) 
+VALUES (horarios_recoleccion_id_seq.NEXTVAL, 'martes', TO_TIMESTAMP('03-06-2025 2:00:00','DD-MM-YYYY HH24:MI:SS')
+,TO_TIMESTAMP('03-06-2025 5:00:00','DD-MM-YYYY HH24:MI:SS'),2,3);
+
+INSERT INTO horarios_recoleccion (id_horarios_recoleccion,dia, hora_inicio, hora_salida, id_empleado, id_ruta) 
+VALUES (horarios_recoleccion_id_seq.NEXTVAL, 'miercoles', TO_TIMESTAMP('04-06-2025 2:00:00','DD-MM-YYYY HH24:MI:SS')
+,TO_TIMESTAMP('04-06-2025 5:00:00','DD-MM-YYYY HH24:MI:SS'),1,2);
+
+INSERT INTO horarios_recoleccion (id_horarios_recoleccion,dia, hora_inicio, hora_salida, id_empleado, id_ruta) 
+VALUES (horarios_recoleccion_id_seq.NEXTVAL, 'jueves', TO_TIMESTAMP('05-06-2025 7:00:00','DD-MM-YYYY HH24:MI:SS')
+,TO_TIMESTAMP('05-06-2025 10:00:00','DD-MM-YYYY HH24:MI:SS' ),2,1);
 
 
-select * from empleados
-order by nombre asc;
-
-select * from vehiculos
-order by capacidad_kg asc;
-
-update empleados set cedula = '001-0000001-1'
-where id_empleado = 1;
-
-update empleados set cedula = '001-1285166-2'
-where id_empleado = 2;
-
-update empleados set cedula = '402-2805132-8'
-where id_empleado = 3;
-
-update empleados set cedula = '402-3779206-0'
-where id_empleado = 4;
-
-update empleados set cedula = '402-2502119-1'
-where id_empleado = 5;
-
-update empleados set id_puesto = 1
-where id_empleado = 2;
-
-commit;
+COMMIT;
 
 
-delete from horarios_recoleccion where id_horarios_recoleccion = 2;
-delete from horarios_recoleccion where id_horarios_recoleccion = 4;
-delete from horarios_recoleccion where id_horarios_recoleccion = 5;
+SELECT * FROM empleados
+ORDER BY nombre ASC;
 
-commit;
+SELECT * FROM vehiculos
+ORDER BY capacidad_kg ASC;
+
+UPDATE empleados SET cedula = '001-0000001-1'
+WHERE id_empleado = 1;
+
+UPDATE empleados SET cedula = '001-1285166-2'
+WHERE id_empleado = 2;
+
+UPDATE empleados SET cedula = '402-2805132-8'
+WHERE id_empleado = 3;
+
+UPDATE empleados SET cedula = '402-3779206-0'
+WHERE id_empleado = 4;
+
+UPDATE empleados SET cedula = '402-2502119-1'
+WHERE id_empleado = 5;
+
+UPDATE empleados SET id_puesto = 1
+WHERE id_empleado = 2;
+
+COMMIT;
+
+
+DELETE FROM horarios_recoleccion WHERE id_horarios_recoleccion = 2;
+DELETE FROM horarios_recoleccion WHERE id_horarios_recoleccion = 4;
+DELETE FROM horarios_recoleccion WHERE id_horarios_recoleccion = 5;
+
+COMMIT;
 
 
 
@@ -399,25 +399,25 @@ INSERT INTO reportes_residentes (texto, fecha, cedula_residente) VALUES
 COMMIT;
 
 INSERT INTO ubicacion_contenedores (id_ubicacion, latitud, longitud, descripcion, id_zona) VALUES
-(ubi_cont_id_SEQ.NEXTVAL, 18.4750, -69.8900, 'Contenedor frente al parque Independencia', 1);
+(ubi_cont_id_seq.NEXTVAL, 18.4750, -69.8900, 'Contenedor frente al parque Independencia', 1);
 
 INSERT INTO ubicacion_contenedores (id_ubicacion, latitud, longitud, descripcion, id_zona) VALUES
-(ubi_cont_id_SEQ.NEXTVAL, 19.4501, -70.6944, 'Contenedor en la esquina de la Calle del Sol', 2);
+(ubi_cont_id_seq.NEXTVAL, 19.4501, -70.6944, 'Contenedor en la esquina de la Calle del Sol', 2);
 
 INSERT INTO ubicacion_contenedores (id_ubicacion, latitud, longitud, descripcion, id_zona) VALUES
-(ubi_cont_id_SEQ.NEXTVAL, 19.2205, -70.5305, 'Contenedor cerca del mercado de La Vega', 3);
+(ubi_cont_id_seq.NEXTVAL, 19.2205, -70.5305, 'Contenedor cerca del mercado de La Vega', 3);
 
 INSERT INTO ubicacion_contenedores (id_ubicacion, latitud, longitud, descripcion, id_zona) VALUES
-(ubi_cont_id_SEQ.NEXTVAL, 18.5671, -68.3671, 'Contenedor en la entrada de Punta Cana Village', 4);
+(ubi_cont_id_seq.NEXTVAL, 18.5671, -68.3671, 'Contenedor en la entrada de Punta Cana Village', 4);
 
 INSERT INTO ubicacion_contenedores (id_ubicacion, latitud, longitud, descripcion, id_zona) VALUES
-(ubi_cont_id_SEQ.NEXTVAL, 19.7951, -70.6899, 'Contenedor próximo al malecón de Puerto Plata', 5);
+(ubi_cont_id_seq.NEXTVAL, 19.7951, -70.6899, 'Contenedor próximo al malecón de Puerto Plata', 5);
 
 
 COMMIT;
 
-SELECT * FROM RESIDENTES;
-SELECT * FROM REPORTES_RESIDENTES;
+SELECT * FROM residentes;
+SELECT * FROM reportes_residentes;
 SELECT * FROM ubicacion_contenedores;
 
 COMMIT;
@@ -445,12 +445,12 @@ WHERE texto = 'Queja por mal estado del parque cercano';
 DELETE FROM reportes_residentes
 WHERE texto = 'Solicitud de reparación de alumbrado público';
 
-commit;
+COMMIT;
 
 
 // kevin
 
-CREATE SEQUENCE sq_mrGarcia 
+CREATE SEQUENCE sq_mrgarcia 
 START WITH 1
 INCREMENT BY 1;
 
@@ -464,11 +464,11 @@ INSERT INTO sensores (serial, marca) VALUES (8915568, 'CleanScan');
 INSERT INTO sensores (serial, marca) VALUES (8469470, 'BinSmart');
 
 
-INSERT INTO tipo_residuo (id_tipo_residuo, descripcion) VALUES (sq_mrgarcia.nextval, 'Organico');
-INSERT INTO tipo_residuo (id_tipo_residuo, descripcion) VALUES (sq_mrgarcia.nextval, 'vidrio');
-INSERT INTO tipo_residuo (id_tipo_residuo, descripcion) VALUES (sq_mrgarcia.nextval, 'plastico');
-INSERT INTO tipo_residuo (id_tipo_residuo, descripcion) VALUES (sq_mrgarcia.nextval, 'papel');
-INSERT INTO tipo_residuo (id_tipo_residuo, descripcion) VALUES (sq_mrgarcia.nextval, 'carton');
+INSERT INTO tipo_residuo (id_tipo_residuo, descripcion) VALUES (sq_mrgarcia.NEXTVAL, 'Organico');
+INSERT INTO tipo_residuo (id_tipo_residuo, descripcion) VALUES (sq_mrgarcia.NEXTVAL, 'vidrio');
+INSERT INTO tipo_residuo (id_tipo_residuo, descripcion) VALUES (sq_mrgarcia.NEXTVAL, 'plastico');
+INSERT INTO tipo_residuo (id_tipo_residuo, descripcion) VALUES (sq_mrgarcia.NEXTVAL, 'papel');
+INSERT INTO tipo_residuo (id_tipo_residuo, descripcion) VALUES (sq_mrgarcia.NEXTVAL, 'carton');
 
 
 INSERT INTO contenedores(estado, capacidad_kg, ultimo_mantenimiento, id_ubicacion, id_tipo_residuo)
@@ -500,18 +500,18 @@ COMMIT;
 // updates
 
 UPDATE contenedores SET capacidad_kg = 130 WHERE id_contenedor = 1;
-UPDATE ubicacion_contenedores SET Descripcion = 'Residencial Los Almirantes' WHERE descripcion = 'Residencial Los prados';
+UPDATE ubicacion_contenedores SET descripcion = 'Residencial Los Almirantes' WHERE descripcion = 'Residencial Los prados';
 UPDATE contenedores SET estado = 'nuevo' WHERE ultimo_mantenimiento > TO_DATE('2025-01-01', 'YYYY-MM-DD');
 COMMIT;
 
 // deletes
 
-select * from ubicacion_contenedores;
+SELECT * FROM ubicacion_contenedores;
 DELETE FROM ubicacion_contenedores WHERE id_ubicacion = 1;
 DELETE FROM sensores WHERE serial = 5081781;
 DELETE FROM tipo_residuo WHERE id_tipo_residuo = 5;
 
-Commit;
+COMMIT;
 
 
 
@@ -519,56 +519,56 @@ Commit;
 // Luis Ángel De Los Santos Recio 2018-6676
 
 INSERT INTO usuarios (usuario, contrasena, id_empleado)
-values ('carlos', '1234', 1);
+VALUES ('carlos', '1234', 1);
 
 INSERT INTO usuarios (usuario, contrasena, id_empleado)
-values ('Luis', '1234', 2);
+VALUES ('Luis', '1234', 2);
 
 INSERT INTO usuarios (usuario, contrasena, id_empleado)
-values ('Mariano', '1234', 3);
+VALUES ('Mariano', '1234', 3);
 
 INSERT INTO usuarios (usuario, contrasena, id_empleado)
-values ('Robert', '1234', 4);
+VALUES ('Robert', '1234', 4);
 
 INSERT INTO usuarios (usuario, contrasena, id_empleado)
-values ('Maria', '1234', 5);
+VALUES ('Maria', '1234', 5);
 
-Commit;
+COMMIT;
 
-INSERT INTO reportes_empleados(id, texto, fecha, id_usuario)
-values(reportes_empleados_id_SEQ.nextval, 'Se ha recolectado correctamente la basura', to_date('12-03-2009', 'DD-MM-YYYY'), 2);
+INSERT INTO reportes_empleados(ID, texto, fecha, id_usuario)
+VALUES(reportes_empleados_id_seq.NEXTVAL, 'Se ha recolectado correctamente la basura', TO_DATE('12-03-2009', 'DD-MM-YYYY'), 2);
 
-INSERT INTO reportes_empleados(id, texto, fecha, id_usuario)
-values(reportes_empleados_id_SEQ.nextval, 'No se ha podido recoletar la basura de un contenedor', to_date('12-03-2009', 'DD-MM-YYYY'), 2);
+INSERT INTO reportes_empleados(ID, texto, fecha, id_usuario)
+VALUES(reportes_empleados_id_seq.NEXTVAL, 'No se ha podido recoletar la basura de un contenedor', TO_DATE('12-03-2009', 'DD-MM-YYYY'), 2);
 
-INSERT INTO reportes_empleados(id, texto, fecha, id_usuario)
-values(reportes_empleados_id_SEQ.nextval, 'Se ha recolectado correctametne la basura', to_date('12-03-2009', 'DD-MM-YYYY'), 2);
+INSERT INTO reportes_empleados(ID, texto, fecha, id_usuario)
+VALUES(reportes_empleados_id_seq.NEXTVAL, 'Se ha recolectado correctametne la basura', TO_DATE('12-03-2009', 'DD-MM-YYYY'), 2);
 
-INSERT INTO reportes_empleados(id, texto, fecha, id_usuario)
-values(reportes_empleados_id_SEQ.nextval, 'El contenedor estaba vacio', to_date('12-03-2009', 'DD-MM-YYYY'), 2);
+INSERT INTO reportes_empleados(ID, texto, fecha, id_usuario)
+VALUES(reportes_empleados_id_seq.NEXTVAL, 'El contenedor estaba vacio', TO_DATE('12-03-2009', 'DD-MM-YYYY'), 2);
 
-INSERT INTO reportes_empleados(id, texto, fecha, id_usuario)
-values(reportes_empleados_id_SEQ.nextval, 'Se ha recolectado correctamente la basura', to_date('12-03-2009', 'DD-MM-YYYY'), 2);
-
-INSERT INTO rutas_contenedores_ubicaciones(id_ruta, id_ubi_cont) 
-values(1, 1);
+INSERT INTO reportes_empleados(ID, texto, fecha, id_usuario)
+VALUES(reportes_empleados_id_seq.NEXTVAL, 'Se ha recolectado correctamente la basura', TO_DATE('12-03-2009', 'DD-MM-YYYY'), 2);
 
 INSERT INTO rutas_contenedores_ubicaciones(id_ruta, id_ubi_cont) 
-values(1, 2);
+VALUES(1, 1);
 
 INSERT INTO rutas_contenedores_ubicaciones(id_ruta, id_ubi_cont) 
-values(2, 3);
+VALUES(1, 2);
 
 INSERT INTO rutas_contenedores_ubicaciones(id_ruta, id_ubi_cont) 
-values(2, 4);
+VALUES(2, 3);
 
 INSERT INTO rutas_contenedores_ubicaciones(id_ruta, id_ubi_cont) 
-values(3, 5);
+VALUES(2, 4);
 
 INSERT INTO rutas_contenedores_ubicaciones(id_ruta, id_ubi_cont) 
-values(3, 1);
+VALUES(3, 5);
 
-Commit;
+INSERT INTO rutas_contenedores_ubicaciones(id_ruta, id_ubi_cont) 
+VALUES(3, 1);
+
+COMMIT;
 
 SELECT * FROM usuarios ORDER BY id_empleado;
 SELECT * FROM reportes_empleados;
@@ -584,5 +584,95 @@ DELETE FROM rutas_contenedores_ubicaciones where id_ruta = 2;
 DELETE FROM rutas_contenedores_ubicaciones where id_ruta = 3;
 */
 
-commit;
+COMMIT;
+
+
 // Practica 4
+
+// luis
+SELECT id_contenedor, estado, capacidad_kg FROM contenedores;
+SELECT cedula_residente, nombre, email FROM residentes;
+
+
+// complejas
+SELECT id_empleado, nombre, cedula, id_puesto FROM empleados WHERE id_puesto = 1 ORDER BY nombre;
+
+SELECT id_contenedor,
+    estado,
+    capacidad_kg,
+    ultimo_mantenimiento
+FROM contenedores 
+WHERE ultimo_mantenimiento BETWEEN TO_DATE('1-1-2010', 'DD-MM-YY') AND TO_DATE('1-1-2023', 'DD-MM-YY')
+ORDER BY capacidad_kg DESC;
+
+
+SELECT 
+    id_contenedor,
+    estado,
+    capacidad_kg,
+    id_ubicacion,
+    id_zona,
+    nombre AS zona_nombre,
+    latitud,
+    longitud
+FROM 
+    contenedores NATURAL JOIN ubicacion_contenedores NATURAL JOIN zonas;
+    
+SELECT id_empleado, nombre, apellido, id_puesto, descripcion
+FROM empleados JOIN  puestos USING (id_puesto);
+    
+SELECT R.id_ruta,
+    R.nombre,
+    R.id_destino_final,
+    D.nombre
+FROM 
+    rutas R JOIN destino_final D ON (R.id_destino_final = D.id_destino_final);
+    
+    
+SELECT * FROM vehiculos;
+
+// En este self join estoy buscando todos los vehiculos cuya capacidad sea menor
+// al valor mas alto del campo capacidad. Con esta informacion uno podria usar EXECEPT para
+// encontrar el valor mas grande de la tabla. 
+SELECT 
+    V1.matricula,
+    V1.capacidad_kg 
+FROM 
+    vehiculos V1 JOIN vehiculos V2 ON V1.capacidad_kg < V2.capacidad_kg;
+
+
+SELECT
+    R.ID,
+    R.texto, 
+    R.fecha, 
+    R.id_usuario, 
+    E.nombre 
+FROM
+    reportes_empleados R 
+JOIN 
+    usuarios U ON (R.id_usuario = U.id_usuario) AND (R.ID < 3)
+JOIN
+    empleados E ON (U.id_empleado = E.id_empleado);
+    
+SELECT 
+    C.id_contenedor,
+    C.estado,
+    C.capacidad_kg,
+    T.id_tipo_residuo,
+    T.descripcion
+FROM contenedores C LEFT JOIN tipo_residuo T ON (C.id_tipo_residuo = T.id_tipo_residuo);
+    
+// En este caso, sacamos los vehiculos con la mayor capacidad que hay.
+// (el valor mas alto de capacidad existente en la tabla es 1500 y los dos vehiculos
+// mostrados tienen dicho valor)
+SELECT 
+    matricula,
+    capacidad_kg
+FROM vehiculos EXCEPT (SELECT 
+            V1.matricula,
+            V1.capacidad_kg 
+        FROM 
+            vehiculos V1 JOIN vehiculos V2 ON V1.capacidad_kg < V2.capacidad_kg);
+            
+SELECT * FROM vehiculos WHERE capacidad_kg < (SELECT 
+                        capacidad_kg FROM vehiculos WHERE matricula = 'E089547');
