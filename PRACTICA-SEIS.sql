@@ -22,8 +22,29 @@ ALTER TABLE emp2 modify last_name varchar2(40);
 desc emp2;
 
 
+create table employee2 (
+    id number(12),
+    first_name varchar2(20),
+    last_name varchar(40),
+    salary number(10,2),
+    dept_id number(12)
+);
+
+insert into employee2 (
+    select employee_id, first_name, last_name, salary, department_id
+    from employees
+    );
+
+drop table emp2;
+
+select original_name, operation, droptime from recyclebin;
+
+flashback table emp2 to before drop;
 
 
+
+
+    
 // TEMA 2: Sub-Consultas
 
 select e.last_name,
@@ -32,4 +53,6 @@ select e.last_name,
 from employees e
 where (e.department_id, e.salary) in 
     (select department_id, salary from employees where commission_pct is not null);
+    
+
     
