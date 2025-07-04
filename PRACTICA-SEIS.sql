@@ -43,7 +43,6 @@ flashback table emp2 to before drop;
 
 
 
-
     
 // TEMA 2: Sub-Consultas
 
@@ -53,6 +52,21 @@ select e.last_name,
 from employees e
 where (e.department_id, e.salary) in 
     (select department_id, salary from employees where commission_pct is not null);
+    
+    
+    
+// La consulta no trae registros debido a la presencia de nulls
+// en la subconsulta. 
+select e.last_name, d.department_name, e.salary 
+from departments d join employees e on d.department_id = e.department_id
+where (NVL(e.salary,0), NVL(e.commission_pct,0)) in (
+    
+    select  NVL(e.salary,0), NVL(e.commission_pct,0)
+    from locations l join departments d on l.location_id = d.location_id
+    join employees e on e.department_id = d.department_id
+    where l.location_id = 1700
+    )
+    order by salary;
     
 
     
